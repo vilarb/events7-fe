@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+import { useToast } from 'primevue/usetoast'
+
+const toast = useToast()
 
 const searchInput = ref<HTMLInputElement | null>(null)
 defineOptions({
@@ -11,8 +14,14 @@ onMounted(() => {
     if (e.ctrlKey && e.key === 'k') {
       e.preventDefault()
       if (searchInput.value) {
-        searchInput.value.focus()
         searchInput.value.select()
+      } else {
+        toast.add({
+          severity: 'error',
+          summary: 'Search',
+          detail: 'Search input not found',
+          life: 3000,
+        })
       }
     }
   })

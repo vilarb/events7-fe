@@ -4,6 +4,7 @@ import { onMounted } from 'vue'
 import AppHeader from './components/header.vue'
 import AppTable from './components/table.vue'
 import AppFilters from './components/filters.vue'
+import Toast from 'primevue/toast'
 
 const { fetchEvents } = useEventsStore()
 
@@ -23,5 +24,7 @@ onMounted(async () => {
         <AppTable />
       </main>
     </div>
+
+    <Toast />
   </div>
 </template>
