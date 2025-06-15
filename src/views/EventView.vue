@@ -13,11 +13,13 @@ import AppUiEventForm from '@/components/ui/eventForm.vue'
 import { useToast } from 'primevue/usetoast'
 import Skeleton from 'primevue/skeleton'
 import Button from 'primevue/button'
+import AppUiConfirmPopup from '@/components/dialogs/confirmPopup.vue'
 
 const router = useRouter()
 const visible = ref(true)
 const currentEvent = ref<Event | null>(null)
 const loading = ref(false)
+const deleteEventPopupVisible = ref(false)
 
 const eventsStore = useEventsStore()
 const toast = useToast()
@@ -124,6 +126,7 @@ const saveEvent = async () => {
 
     await eventsStore.updateEvent(currentEvent.value)
     await eventsStore.fetchEvents()
+    deleteEventPopupVisible.value = false
     closeDrawer()
     toast.add({
       severity: 'success',
@@ -132,6 +135,36 @@ const saveEvent = async () => {
       life: 2000,
     })
   } catch (error) {
+    toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: error instanceof Error ? error.message : 'Failed to save event',
+      life: 2000,
+    })
+  }
+}
+
+/**
+ * Delete the event from the database.
+ * Fetch the events from the database and close the drawer.
+ */
+const deleteEvent = async () => {
+  try {
+    if (!currentEvent.value) {
+      throw new Error('No event to save')
+    }
+
+    await eventsStore.deleteEvent(currentEvent.value.id)
+    await eventsStore.fetchEvents()
+    closeDrawer()
+    toast.add({
+      severity: 'success',
+      summary: 'Success',
+      detail: 'Event deleted successfully',
+      life: 2000,
+    })
+  } catch (error) {
+    console.error(error)
     toast.add({
       severity: 'error',
       summary: 'Error',
@@ -179,7 +212,7 @@ const saveEvent = async () => {
           <Button
             label="Delete event"
             icon="pi pi-trash"
-            @click="deleteEvent"
+            @click="deleteEventPopupVisible = true"
             size="small"
             severity="danger"
           />
@@ -192,5 +225,14 @@ const saveEvent = async () => {
       <Skeleton height="4rem" width="100%" />
       <Skeleton height="2rem" width="100%" />
     </div>
+
+    <AppUiConfirmPopup
+      v-model:visible="deleteEventPopupVisible"
+      title="Delete event"
+      message="Are you sure you want to delete this event? This is a permanent action and cannot be undone."
+      confirmLabel="Delete"
+      confirmSeverity="danger"
+      @confirm="deleteEvent"
+    />
   </Drawer>
 </template>

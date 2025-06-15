@@ -137,19 +137,17 @@ export const useEventsStore = defineStore('events', () => {
   /**
    * Delete an event in the database
    */
-  async function deleteEvent(event: Event): Promise<void> {
-    const response = await fetch(`http://localhost:3000/events/${event.id}`, {
+  async function deleteEvent(id: Event['id']): Promise<void> {
+    const response = await fetch(`http://localhost:3000/events/${id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
         accept: 'application/json',
       },
-      body: JSON.stringify(event),
     })
 
-    const eventData = await response.json()
     if (!response.ok) {
-      throw new Error(eventData.error)
+      throw new Error('Failed to delete event')
     }
   }
 
