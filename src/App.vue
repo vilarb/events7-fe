@@ -5,6 +5,7 @@ import AppHeader from './components/header.vue'
 import AppTable from './components/table.vue'
 import AppFilters from './components/filters.vue'
 import Toast from 'primevue/toast'
+import AppCreateEventDialog from './components/dialogs/createEvent.vue'
 
 const { fetchEvents } = useEventsStore()
 
@@ -24,6 +25,7 @@ onMounted(async () => {
         <AppTable />
       </main>
     </div>
+    <AppCreateEventDialog />
 
     <Toast />
   </div>

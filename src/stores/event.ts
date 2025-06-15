@@ -25,10 +25,21 @@ export const useEventsStore = defineStore('events', () => {
   const totalResults = ref<number>(0)
   const totalPages = ref<number>(0)
 
+  const eventTypes = ref<Event['type'][]>(['crosspromo', 'liveops', 'app', 'ads'])
   const loading = ref<boolean>(false)
 
   /**
+   * Open the create event dialog
+   */
+  const createEventDialogOpen = ref<boolean>(false)
+
+  /**
    * Fetch events from the API and construct the filter options and pagination query params
+   *
+   * !This is the only function in this state that automatically try catches the error as it is used manytimes throughout the app.
+   * !This is to avoid repeating the same code over and over again.
+   *
+   * @returns {Promise<void>}
    */
   async function fetchEvents() {
     try {
@@ -55,12 +66,37 @@ export const useEventsStore = defineStore('events', () => {
     }
   }
 
+  /**
+   * Create a new event
+   */
+  async function createEvent(event: Omit<Event, 'id' | 'createdAt' | 'updatedAt'>) {
+    const response = await fetch(`http://localhost:3000/events`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        accept: 'application/json',
+      },
+      body: JSON.stringify(event),
+    })
+
+    const eventData = await response.json()
+    if (!response.ok) {
+      throw new Error(eventData.error)
+    }
+
+    fetchEvents()
+  }
+
   return {
     events,
     loading,
     filter,
     pagination: { page, perPage, totalResults, totalPages },
 
+    createEventDialogOpen,
+    eventTypes,
+
     fetchEvents,
+    createEvent,
   }
 })
