@@ -200,8 +200,13 @@ const deleteEvent = async () => {
       </div>
 
       <div
-        class="flex justify-between border items-center border-red-500 rounded-md p-4 gap-4 mt-auto"
+        class="flex justify-between border items-center border-red-600 rounded-md p-4 gap-4 mt-auto relative"
       >
+        <div
+          class="absolute -top-2 left-0 text-xs uppercase font-medium bg-white dark:bg-zinc-900 text-red-600 px-1 ml-3"
+        >
+          Danger zone
+        </div>
         <div class="flex flex-col gap-1 min-w-0 flex-1 mr-4">
           <h6 class="text-xs uppercase font-medium">Delete event</h6>
           <p class="text-xs opacity-60">
@@ -215,6 +220,7 @@ const deleteEvent = async () => {
             @click="deleteEventPopupVisible = true"
             size="small"
             severity="danger"
+            outlined
           />
         </div>
       </div>
