@@ -12,6 +12,7 @@ import { useEventsStore, type Event } from '@/stores/event'
 import AppUiEventForm from '@/components/ui/eventForm.vue'
 import { useToast } from 'primevue/usetoast'
 import Skeleton from 'primevue/skeleton'
+import Button from 'primevue/button'
 
 const router = useRouter()
 const visible = ref(true)
@@ -110,6 +111,35 @@ onMounted(async () => {
     loading.value = false
   }
 })
+
+/**
+ * Save the event to the database.
+ * Fetch the events from the database and close the drawer.
+ */
+const saveEvent = async () => {
+  try {
+    if (!currentEvent.value) {
+      throw new Error('No event to save')
+    }
+
+    await eventsStore.updateEvent(currentEvent.value)
+    await eventsStore.fetchEvents()
+    closeDrawer()
+    toast.add({
+      severity: 'success',
+      summary: 'Success',
+      detail: 'Event saved successfully',
+      life: 2000,
+    })
+  } catch (error) {
+    toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: error instanceof Error ? error.message : 'Failed to save event',
+      life: 2000,
+    })
+  }
+}
 </script>
 
 <template>
@@ -118,7 +148,7 @@ onMounted(async () => {
     position="right"
     :showCloseIcon="true"
     :closeOnEscape="true"
-    class="!w-[400px]"
+    class="!w-[500px]"
   >
     <template #header>
       <div class="flex flex-col gap-1">
@@ -128,8 +158,33 @@ onMounted(async () => {
       </div>
     </template>
 
-    <div class="flex flex-col gap-4" v-if="currentEvent">
+    <div class="flex flex-col gap-4 h-full" v-if="currentEvent">
       <AppUiEventForm v-model="currentEvent" />
+
+      <div class="flex justify-end gap-2">
+        <Button label="Close" @click="closeDrawer" severity="secondary" size="small" />
+        <Button label="Update event" @click="saveEvent" size="small" />
+      </div>
+
+      <div
+        class="flex justify-between border items-center border-red-500 rounded-md p-4 gap-4 mt-auto"
+      >
+        <div class="flex flex-col gap-1 min-w-0 flex-1 mr-4">
+          <h6 class="text-xs uppercase font-medium">Delete event</h6>
+          <p class="text-xs opacity-60">
+            Deleting an event will remove it from the database permanently and cannot be undone.
+          </p>
+        </div>
+        <div class="flex-shrink-0">
+          <Button
+            label="Delete event"
+            icon="pi pi-trash"
+            @click="deleteEvent"
+            size="small"
+            severity="danger"
+          />
+        </div>
+      </div>
     </div>
     <div v-else class="flex flex-col gap-6">
       <Skeleton height="2rem" width="100%" />
