@@ -19,6 +19,11 @@ defineOptions({
   name: 'AppCreateEventDialog',
 })
 
+/**
+ * Call the createEvent function from the events store to create a new event and fetch events.
+ * Close the dialog, reset the form and show a success toast.
+ * If there is an error, show an error toast.
+ */
 const createEvent = async () => {
   try {
     await eventsStore.createEvent(newEvent.value)
@@ -55,13 +60,15 @@ const createEvent = async () => {
     dismissable-mask
     style="width: 450px"
   >
+    <!-- HEADER -->
     <template #header>
-      <h3 class="text font-medium">Create new event</h3>
+      <h3 class="text-lg font-medium">Create new event</h3>
     </template>
 
+    <!-- FORM -->
     <AppUiEventForm v-model="newEvent" />
 
-    <!-- ACTIONS -->
+    <!-- CALL TO ACTION BUTTONS -->
     <div class="flex justify-end gap-2 mt-6">
       <Button
         label="Cancel"
