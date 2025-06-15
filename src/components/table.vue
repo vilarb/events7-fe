@@ -1,21 +1,35 @@
 <script lang="ts" setup>
-import DataTable, { type DataTablePageEvent } from 'primevue/datatable'
+import DataTable, { type DataTablePageEvent, type DataTableRowClickEvent } from 'primevue/datatable'
 import Column from 'primevue/column'
 import Button from 'primevue/button'
 import { useEventsStore } from '@/stores/event'
+import { useRouter } from 'vue-router'
 import AppTableHeader from './table/header.vue'
-import AppEventType from './ui/eventType.vue'
+import AppUiEventType from './ui/eventType.vue'
 
 defineOptions({
   name: 'AppHeader',
 })
 
 const eventsStore = useEventsStore()
+const router = useRouter()
 
-const changePage = (event: DataTablePageEvent) => {
+/**
+ * Change the page of the table and fetch the new events
+ * @param event - The event data
+ */
+const changeTablePage = (event: DataTablePageEvent) => {
   eventsStore.pagination.page = event.page + 1
   eventsStore.pagination.perPage = event.rows
   eventsStore.fetchEvents()
+}
+
+/**
+ * Navigate to the event details page
+ * @param event - The event data
+ */
+const navigateToEvent = (event: DataTableRowClickEvent) => {
+  router.push(`/event/${event.data.id}`)
 }
 </script>
 
@@ -34,7 +48,7 @@ const changePage = (event: DataTablePageEvent) => {
         rowHover
         scrollHeight="flex"
         :loading="eventsStore.loading"
-        @page="changePage"
+        @page="changeTablePage"
         paginator
         class="!text-sm max-h-[calc(100vh-165px)]"
         alwaysShowPaginator
@@ -44,6 +58,7 @@ const changePage = (event: DataTablePageEvent) => {
         :totalRecords="eventsStore.pagination.totalResults"
         :totalPages="eventsStore.pagination.totalPages"
         :rowClass="() => 'cursor-pointer'"
+        @row-click="navigateToEvent"
       >
         <template #header>
           <AppTableHeader />
@@ -55,7 +70,7 @@ const changePage = (event: DataTablePageEvent) => {
         <Column field="type" header="Type">
           <template #body="slotProps">
             <div class="flex items-center">
-              <AppEventType :type="slotProps.data.type" />
+              <AppUiEventType :type="slotProps.data.type" />
             </div>
           </template>
         </Column>
