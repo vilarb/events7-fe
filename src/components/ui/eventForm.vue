@@ -7,6 +7,7 @@ import InputText from 'primevue/inputtext'
 import Textarea from 'primevue/textarea'
 import Slider from 'primevue/slider'
 import InputNumber from 'primevue/inputnumber'
+import AppUiEventType from '@/components/ui/eventType.vue'
 
 defineOptions({
   name: 'AppUiEventForm',
@@ -29,7 +30,17 @@ const eventsStore = useEventsStore()
     <!-- TYPE SELECT -->
     <div class="flex flex-col gap-2">
       <label for="type" class="text-xs font-medium opacity-60">Type</label>
-      <Select id="type" v-model="event.type" :options="eventsStore.eventTypes" size="small" />
+      <!-- <Select id="type" v-model="event.type" :options="eventsStore.eventTypes" size="small" /> -->
+      <Select id="type" v-model="event.type" :options="eventsStore.eventTypes" size="small">
+        <template #value="slotProps">
+          <div class="flex">
+            <AppUiEventType :type="slotProps.value" />
+          </div>
+        </template>
+        <template #option="slotProps">
+          <AppUiEventType :type="slotProps.option" />
+        </template>
+      </Select>
     </div>
 
     <!-- TITLE -->
