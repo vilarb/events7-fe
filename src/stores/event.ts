@@ -1,5 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
+import { useToast } from 'primevue/usetoast'
 
 export interface Event {
   id: number
@@ -16,10 +17,13 @@ interface Filter {
 }
 
 export const useEventsStore = defineStore('events', () => {
+  const toast = useToast()
+
   const events = ref<Event[]>([])
   const activeEvent = ref<Event | null>(null)
 
   const filter = ref<Filter>({})
+  const sort = ref<Record<string, string>>({ id: 'DESC' })
 
   const page = ref<number>(1)
   const perPage = ref<number>(25)
@@ -54,6 +58,12 @@ export const useEventsStore = defineStore('events', () => {
         options.s = JSON.stringify(filter.value)
       }
 
+      if (sort.value) {
+        options.sort = Object.entries(sort.value)
+          .map(([key, value]) => `${key},${value}`)
+          .join('&')
+      }
+
       const params = new URLSearchParams(options)
       const response = await fetch(`http://localhost:3000/events?${params}`, {
         headers: {
@@ -61,12 +71,24 @@ export const useEventsStore = defineStore('events', () => {
           accept: 'application/json',
         },
       })
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch events')
+      }
+
       const eventsData = await response.json()
+
       events.value = eventsData.data
       totalResults.value = eventsData.total
       totalPages.value = eventsData.pageCount
     } catch (e) {
       console.error(e)
+      toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: e instanceof Error ? e.message : 'Failed to fetch events',
+        life: 3000,
+      })
     } finally {
       loading.value = false
     }
@@ -156,6 +178,7 @@ export const useEventsStore = defineStore('events', () => {
     activeEvent,
     loading,
     filter,
+    sort,
     pagination: { page, perPage, totalResults, totalPages },
 
     createEventDialogOpen,

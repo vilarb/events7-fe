@@ -1,5 +1,9 @@
 <script lang="ts" setup>
-import DataTable, { type DataTablePageEvent, type DataTableRowClickEvent } from 'primevue/datatable'
+import DataTable, {
+  type DataTablePageEvent,
+  type DataTableRowClickEvent,
+  type DataTableSortEvent,
+} from 'primevue/datatable'
 import Column from 'primevue/column'
 import Button from 'primevue/button'
 import { useEventsStore } from '@/stores/event'
@@ -32,6 +36,18 @@ const changeTablePage = (event: DataTablePageEvent) => {
 const navigateToEvent = (event: DataTableRowClickEvent) => {
   router.push(`/event/${event.data.id}`)
 }
+
+const sortTable = (event: DataTableSortEvent) => {
+  if (event.sortField) {
+    eventsStore.sort = {
+      [event.sortField as string]: event.sortOrder === 1 ? 'ASC' : 'DESC',
+    }
+  } else {
+    eventsStore.sort = {}
+  }
+
+  eventsStore.fetchEvents()
+}
 </script>
 
 <template>
@@ -46,6 +62,7 @@ const navigateToEvent = (event: DataTableRowClickEvent) => {
         stripedRows
         scrollable
         lazy
+        @sort="sortTable"
         rowHover
         scrollHeight="flex"
         :loading="eventsStore.loading"
@@ -65,7 +82,7 @@ const navigateToEvent = (event: DataTableRowClickEvent) => {
           <AppTableHeader />
         </template>
 
-        <Column field="id" header="#ID"></Column>
+        <Column field="id" header="#ID" sortable></Column>
         <Column field="title" header="Title" class="max-w-[150px] truncate"></Column>
         <Column field="description" header="Description" class="max-w-[300px] truncate"></Column>
         <Column field="type" header="Type">
@@ -75,13 +92,13 @@ const navigateToEvent = (event: DataTableRowClickEvent) => {
             </div>
           </template>
         </Column>
-        <Column field="priority" header="Priority"></Column>
-        <Column header="Created">
+        <Column field="priority" header="Priority" sortable></Column>
+        <Column header="Created" sortable>
           <template #body="slotProps">
             <AppUiDateDisplay :date="slotProps.data.createdAt" />
           </template>
         </Column>
-        <Column header="Last updated">
+        <Column header="Last updated" sortable>
           <template #body="slotProps">
             <AppUiDateDisplay :date="slotProps.data.updatedAt" />
           </template>
