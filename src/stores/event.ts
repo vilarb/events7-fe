@@ -67,7 +67,7 @@ export const useEventsStore = defineStore('events', () => {
   }
 
   /**
-   * Create a new event
+   * Create a new event in the database and fetch events
    */
   async function createEvent(event: Omit<Event, 'id' | 'createdAt' | 'updatedAt'>) {
     const response = await fetch(`http://localhost:3000/events`, {

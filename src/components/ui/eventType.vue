@@ -3,7 +3,7 @@ import type { Event } from '@/stores/event'
 import { computed } from 'vue'
 
 defineOptions({
-  name: 'AppEventType',
+  name: 'AppUiEventType',
 })
 
 const props = defineProps<{
