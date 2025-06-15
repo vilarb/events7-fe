@@ -93,12 +93,12 @@ const sortTable = (event: DataTableSortEvent) => {
           </template>
         </Column>
         <Column field="priority" header="Priority" sortable></Column>
-        <Column header="Created" sortable>
+        <Column field="createdAt" header="Created" sortable>
           <template #body="slotProps">
             <AppUiDateDisplay :date="slotProps.data.createdAt" />
           </template>
         </Column>
-        <Column header="Last updated" sortable>
+        <Column field="updatedAt" header="Last updated" sortable>
           <template #body="slotProps">
             <AppUiDateDisplay :date="slotProps.data.updatedAt" />
           </template>
