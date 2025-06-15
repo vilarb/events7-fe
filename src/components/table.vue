@@ -6,6 +6,7 @@ import { useEventsStore } from '@/stores/event'
 import { useRouter } from 'vue-router'
 import AppTableHeader from './table/header.vue'
 import AppUiEventType from './ui/eventType.vue'
+import AppUiDateDisplay from './ui/dateDisplay.vue'
 
 defineOptions({
   name: 'AppHeader',
@@ -65,8 +66,8 @@ const navigateToEvent = (event: DataTableRowClickEvent) => {
         </template>
 
         <Column field="id" header="#ID"></Column>
-        <Column field="title" header="Title"></Column>
-        <Column field="description" header="Description"></Column>
+        <Column field="title" header="Title" class="max-w-[150px] truncate"></Column>
+        <Column field="description" header="Description" class="max-w-[300px] truncate"></Column>
         <Column field="type" header="Type">
           <template #body="slotProps">
             <div class="flex items-center">
@@ -77,23 +78,12 @@ const navigateToEvent = (event: DataTableRowClickEvent) => {
         <Column field="priority" header="Priority"></Column>
         <Column header="Created">
           <template #body="slotProps">
-            {{
-              new Date(slotProps.data.createdAt).toLocaleString('si-SL', {
-                timeStyle: 'short',
-                dateStyle: 'medium',
-              })
-            }}
+            <AppUiDateDisplay :date="slotProps.data.createdAt" />
           </template>
         </Column>
         <Column header="Last updated">
           <template #body="slotProps">
-            {{
-              new Date(slotProps.data.createdAt).toLocaleString('si-SL', {
-                timeStyle: 'short',
-                dateStyle: 'medium',
-                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-              })
-            }}
+            <AppUiDateDisplay :date="slotProps.data.updatedAt" />
           </template>
         </Column>
       </DataTable>
