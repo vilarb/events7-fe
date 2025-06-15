@@ -27,6 +27,7 @@ defineOptions({
 const createEvent = async () => {
   try {
     await eventsStore.createEvent(newEvent.value)
+    await eventsStore.fetchEvents()
     eventsStore.createEventDialogOpen = false
     newEvent.value = {
       title: '',

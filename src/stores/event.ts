@@ -17,6 +17,7 @@ interface Filter {
 
 export const useEventsStore = defineStore('events', () => {
   const events = ref<Event[]>([])
+  const activeEvent = ref<Event | null>(null)
 
   const filter = ref<Filter>({})
 
@@ -54,7 +55,12 @@ export const useEventsStore = defineStore('events', () => {
       }
 
       const params = new URLSearchParams(options)
-      const response = await fetch(`http://localhost:3000/events?${params}`)
+      const response = await fetch(`http://localhost:3000/events?${params}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          accept: 'application/json',
+        },
+      })
       const eventsData = await response.json()
       events.value = eventsData.data
       totalResults.value = eventsData.total
@@ -67,9 +73,9 @@ export const useEventsStore = defineStore('events', () => {
   }
 
   /**
-   * Create a new event in the database and fetch events
+   * Create a new event in the database
    */
-  async function createEvent(event: Omit<Event, 'id' | 'createdAt' | 'updatedAt'>) {
+  async function createEvent(event: Omit<Event, 'id' | 'createdAt' | 'updatedAt'>): Promise<Event> {
     const response = await fetch(`http://localhost:3000/events`, {
       method: 'POST',
       headers: {
@@ -84,11 +90,72 @@ export const useEventsStore = defineStore('events', () => {
       throw new Error(eventData.error)
     }
 
-    fetchEvents()
+    return eventData
+  }
+
+  /**
+   * Fetch an event from the database
+   */
+  async function fetchEvent(id: Event['id']): Promise<Event> {
+    const response = await fetch(`http://localhost:3000/events/${id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        accept: 'application/json',
+      },
+    })
+
+    const eventData = await response.json()
+    if (!response.ok) {
+      throw new Error(eventData.error)
+    }
+
+    return eventData
+  }
+
+  /**
+   * Update an event in the database
+   */
+  async function updateEvent(event: Event): Promise<Event> {
+    const response = await fetch(`http://localhost:3000/events/${event.id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        accept: 'application/json',
+      },
+      body: JSON.stringify(event),
+    })
+
+    const eventData = await response.json()
+    if (!response.ok) {
+      throw new Error(eventData.error)
+    }
+
+    return eventData
+  }
+
+  /**
+   * Delete an event in the database
+   */
+  async function deleteEvent(event: Event): Promise<void> {
+    const response = await fetch(`http://localhost:3000/events/${event.id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        accept: 'application/json',
+      },
+      body: JSON.stringify(event),
+    })
+
+    const eventData = await response.json()
+    if (!response.ok) {
+      throw new Error(eventData.error)
+    }
   }
 
   return {
     events,
+    activeEvent,
     loading,
     filter,
     pagination: { page, perPage, totalResults, totalPages },
@@ -98,5 +165,8 @@ export const useEventsStore = defineStore('events', () => {
 
     fetchEvents,
     createEvent,
+    fetchEvent,
+    updateEvent,
+    deleteEvent,
   }
 })
