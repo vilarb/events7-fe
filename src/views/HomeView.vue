@@ -18,6 +18,7 @@ onMounted(async () => {
       <AppTable />
     </main>
 
+    <!-- Router views for event details -->
     <RouterView />
   </div>
 </template>

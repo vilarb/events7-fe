@@ -3,7 +3,7 @@ import { useEventsStore, type Event } from '@/stores/event'
 import Dialog from 'primevue/dialog'
 import AppUiEventForm from '@/components/ui/eventForm.vue'
 import Button from 'primevue/button'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useToast } from 'primevue/usetoast'
 
 const eventsStore = useEventsStore()
@@ -17,6 +17,27 @@ const newEvent = ref<Omit<Event, 'id' | 'createdAt' | 'updatedAt'>>({
 
 defineOptions({
   name: 'AppCreateEventDialog',
+})
+
+const validateUser = async () => {
+  const response = await fetch('https://api.ipify.org?format=json')
+  const data = await response.json()
+  console.log(data)
+
+  const response2 = await fetch(`http://localhost:3000/users/authorize?ip=${data.ip}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      accept: 'application/json',
+    },
+  })
+  console.log(response2)
+
+  console.log(await response2.json())
+}
+
+onMounted(() => {
+  validateUser()
 })
 
 /**
