@@ -39,11 +39,11 @@ const navigateToEvent = (event: DataTableRowClickEvent) => {
 
 const sortTable = (event: DataTableSortEvent) => {
   if (event.sortField) {
-    eventsStore.sort = {
-      [event.sortField as string]: event.sortOrder === 1 ? 'ASC' : 'DESC',
-    }
+    eventsStore.orderBy = event.sortField as string
+    eventsStore.orderDirection = event.sortOrder === 1 ? 'ASC' : 'DESC'
   } else {
-    eventsStore.sort = {}
+    eventsStore.orderBy = 'id'
+    eventsStore.orderDirection = 'DESC'
   }
 
   eventsStore.fetchEvents()

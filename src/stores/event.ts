@@ -20,10 +20,9 @@ export const useEventsStore = defineStore('events', () => {
   const abortController = new AbortController()
 
   const search = ref<string>('')
-  const filter = ref<Record<string, string | Record<string, unknown> | Record<string, unknown>[]>>(
-    {},
-  )
-  const sort = ref<Record<string, string>>({ id: 'DESC' })
+  const typeFilter = ref<Event['type'] | null>(null)
+  const orderDirection = ref<string>('DESC')
+  const orderBy = ref<string>('id')
 
   const page = ref<number>(1)
   const perPage = ref<number>(25)
@@ -48,10 +47,6 @@ export const useEventsStore = defineStore('events', () => {
     }
     debounceTimeout.value = setTimeout(() => {
       page.value = 1
-      filter.value = {
-        ...filter.value,
-        $or: [{ title: { $contL: search.value } }, { description: { $contL: search.value } }],
-      }
       fetchEvents()
     }, 150)
   }
@@ -71,23 +66,24 @@ export const useEventsStore = defineStore('events', () => {
   async function fetchEvents() {
     try {
       loading.value = true
-      const options: Record<string, string> = {
+
+      const params: Record<string, string> = {
         page: page.value.toString(),
-        per_page: perPage.value.toString(),
+        perPage: perPage.value.toString(),
+        orderDirection: orderDirection.value,
+        orderBy: orderBy.value,
       }
 
-      if (Object.keys(filter.value).length > 0) {
-        options.s = JSON.stringify(filter.value)
+      if (typeFilter.value) {
+        params.type = typeFilter.value
       }
 
-      if (sort.value) {
-        options.sort = Object.entries(sort.value)
-          .map(([key, value]) => `${key},${value}`)
-          .join('&')
+      if (search.value) {
+        params.search = search.value
       }
 
-      const params = new URLSearchParams(options)
-      const response = await fetch(`http://localhost:3000/events?${params}`, {
+      const paramsString = new URLSearchParams(params)
+      const response = await fetch(`http://localhost:3000/events?${paramsString}`, {
         headers: {
           'Content-Type': 'application/json',
           accept: 'application/json',
@@ -101,9 +97,9 @@ export const useEventsStore = defineStore('events', () => {
 
       const eventsData = await response.json()
 
-      events.value = eventsData.data
+      events.value = eventsData.events
       totalResults.value = eventsData.total
-      totalPages.value = eventsData.pageCount
+      totalPages.value = Math.ceil(eventsData.total / perPage.value)
     } catch (e) {
       console.error(e)
       toast.add({
@@ -200,9 +196,10 @@ export const useEventsStore = defineStore('events', () => {
     events,
     activeEvent,
     loading,
-    filter,
+    typeFilter,
     search,
-    sort,
+    orderDirection,
+    orderBy,
     pagination: { page, perPage, totalResults, totalPages },
 
     createEventDialogOpen,

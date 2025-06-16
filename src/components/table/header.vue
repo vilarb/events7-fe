@@ -8,7 +8,7 @@ defineOptions({
 })
 
 const eventsStore = useEventsStore()
-const filter = computed(() => eventsStore.filter)
+const filter = computed(() => eventsStore.typeFilter)
 
 const filterOptions = [
   { value: 'all', label: 'All' },
@@ -19,7 +19,7 @@ const filterOptions = [
 ] as const
 
 const setFilter = (type: Event['type'] | 'all') => {
-  eventsStore.filter.type = type === 'all' ? undefined : type
+  eventsStore.typeFilter = type === 'all' ? null : type
   eventsStore.fetchEvents()
 }
 </script>
@@ -31,8 +31,7 @@ const setFilter = (type: Event['type'] | 'all') => {
       :key="option.value"
       class="cursor-pointer hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md px-2 py-1 transition-all"
       :class="{
-        'dark:!bg-zinc-700 bg-zinc-200':
-          option.value === 'all' ? !filter.type : filter.type === option.value,
+        'dark:!bg-zinc-700 bg-zinc-200': option.value === 'all' ? !filter : filter === option.value,
       }"
       @click="setFilter(option.value)"
     >
