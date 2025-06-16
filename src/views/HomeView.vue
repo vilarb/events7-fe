@@ -1,5 +1,13 @@
 <script setup lang="ts">
+import { onMounted } from 'vue'
 import AppTable from '@/components/table.vue'
+import { useEventsStore } from '@/stores/event'
+
+const { fetchEvents } = useEventsStore()
+
+onMounted(async () => {
+  await fetchEvents()
+})
 </script>
 
 <template>

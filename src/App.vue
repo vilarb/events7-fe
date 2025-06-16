@@ -1,15 +1,7 @@
 <script setup lang="ts">
-import { useEventsStore } from './stores/event'
-import { onMounted } from 'vue'
 import AppHeader from './components/header.vue'
 import Toast from 'primevue/toast'
 import AppCreateEventDialog from './components/dialogs/createEvent.vue'
-
-const { fetchEvents } = useEventsStore()
-
-onMounted(async () => {
-  await fetchEvents()
-})
 </script>
 
 <template>
