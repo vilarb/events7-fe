@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { defineStore } from 'pinia'
 import { useToast } from 'primevue/usetoast'
 
@@ -12,17 +12,17 @@ export interface Event {
   updatedAt: string
 }
 
-interface Filter {
-  type?: Event['type']
-}
-
 export const useEventsStore = defineStore('events', () => {
   const toast = useToast()
 
   const events = ref<Event[]>([])
   const activeEvent = ref<Event | null>(null)
+  const abortController = new AbortController()
 
-  const filter = ref<Filter>({})
+  const search = ref<string>('')
+  const filter = ref<Record<string, string | Record<string, unknown> | Record<string, unknown>[]>>(
+    {},
+  )
   const sort = ref<Record<string, string>>({ id: 'DESC' })
 
   const page = ref<number>(1)
@@ -32,11 +32,33 @@ export const useEventsStore = defineStore('events', () => {
 
   const eventTypes = ref<Event['type'][]>(['crosspromo', 'liveops', 'app', 'ads'])
   const loading = ref<boolean>(false)
+  const debounceTimeout = ref<number | null>(null)
 
   /**
    * Open the create event dialog
    */
   const createEventDialogOpen = ref<boolean>(false)
+
+  /**
+   * Debounce the search function to prevent request spamming and backend load
+   */
+  const debouncedSearch = () => {
+    if (debounceTimeout.value) {
+      clearTimeout(debounceTimeout.value)
+    }
+    debounceTimeout.value = setTimeout(() => {
+      page.value = 1
+      filter.value = {
+        ...filter.value,
+        $or: [{ title: { $contL: search.value } }, { description: { $contL: search.value } }],
+      }
+      fetchEvents()
+    }, 150)
+  }
+
+  watch(search, () => {
+    debouncedSearch()
+  })
 
   /**
    * Fetch events from the API and construct the filter options and pagination query params
@@ -54,7 +76,7 @@ export const useEventsStore = defineStore('events', () => {
         per_page: perPage.value.toString(),
       }
 
-      if (filter.value) {
+      if (Object.keys(filter.value).length > 0) {
         options.s = JSON.stringify(filter.value)
       }
 
@@ -70,6 +92,7 @@ export const useEventsStore = defineStore('events', () => {
           'Content-Type': 'application/json',
           accept: 'application/json',
         },
+        signal: abortController.signal,
       })
 
       if (!response.ok) {
@@ -178,6 +201,7 @@ export const useEventsStore = defineStore('events', () => {
     activeEvent,
     loading,
     filter,
+    search,
     sort,
     pagination: { page, perPage, totalResults, totalPages },
 
