@@ -10,8 +10,6 @@ import AppTable from '@/components/table.vue'
       <AppTable />
     </main>
 
-    <Suspense>
-      <RouterView />
-    </Suspense>
+    <RouterView />
   </div>
 </template>
