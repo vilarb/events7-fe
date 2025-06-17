@@ -13,6 +13,10 @@ defineOptions({
   name: 'AppUiEventForm',
 })
 
+defineProps<{
+  invalidAdsType: boolean
+}>()
+
 const event = defineModel<Omit<Event, 'id' | 'createdAt' | 'updatedAt'>>({
   default: () => ({
     title: '',
@@ -31,7 +35,13 @@ const eventsStore = useEventsStore()
     <div class="flex flex-col gap-2">
       <label for="type" class="text-xs font-medium opacity-60">Type</label>
       <!-- <Select id="type" v-model="event.type" :options="eventsStore.eventTypes" size="small" /> -->
-      <Select id="type" v-model="event.type" :options="eventsStore.eventTypes" size="small">
+      <Select
+        id="type"
+        v-model="event.type"
+        :options="eventsStore.eventTypes"
+        size="small"
+        :invalid="invalidAdsType"
+      >
         <template #value="slotProps">
           <div class="flex">
             <AppUiEventType :type="slotProps.value" />
@@ -41,6 +51,9 @@ const eventsStore = useEventsStore()
           <AppUiEventType :type="slotProps.option" />
         </template>
       </Select>
+      <p v-if="invalidAdsType" class="text-xs text-red-500">
+        You are not allowed to create ads events.
+      </p>
     </div>
 
     <!-- TITLE -->

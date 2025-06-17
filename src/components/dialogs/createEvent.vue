@@ -3,12 +3,15 @@ import { useEventsStore, type Event } from '@/stores/event'
 import Dialog from 'primevue/dialog'
 import AppUiEventForm from '@/components/ui/eventForm.vue'
 import Button from 'primevue/button'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import { useToast } from 'primevue/usetoast'
 import { useEventApi } from '@/composables/api/event'
+import { useUser } from '@/composables/user'
+import { useApiFetch } from '@/composables/baseApi'
 
 const eventsStore = useEventsStore()
 const { createEvent: createEventApi } = useEventApi()
+const { user } = useUser()
 const toast = useToast()
 const newEvent = ref<Omit<Event, 'id' | 'createdAt' | 'updatedAt'>>({
   title: '',
@@ -16,30 +19,29 @@ const newEvent = ref<Omit<Event, 'id' | 'createdAt' | 'updatedAt'>>({
   type: 'crosspromo',
   priority: 1,
 })
+const loading = ref<boolean>(false)
+const allowAdsType = ref<boolean>(false)
+
+const invalidAdsType = computed(() => {
+  return !allowAdsType.value && newEvent.value.type === 'ads'
+})
 
 defineOptions({
   name: 'AppCreateEventDialog',
 })
 
-const validateUser = async () => {
-  const response = await fetch('https://api.ipify.org?format=json')
-  const data = await response.json()
-  console.log(data)
-
-  const response2 = await fetch(`http://localhost:3000/users/authorize?ip=${data.ip}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      accept: 'application/json',
-    },
-  })
-  console.log(response2)
-
-  console.log(await response2.json())
+const validateAdsType = async () => {
+  try {
+    const { ads } = await useApiFetch(`/users/authorize?ip=${user.value.ip}`)
+    allowAdsType.value = ads === 'sure, why not!'
+  } catch (e) {
+    console.log('error', e)
+    allowAdsType.value = false
+  }
 }
 
 onMounted(() => {
-  validateUser()
+  validateAdsType()
 })
 
 /**
@@ -49,6 +51,7 @@ onMounted(() => {
  */
 const createEvent = async () => {
   try {
+    loading.value = true
     await createEventApi(newEvent.value)
     await eventsStore.fetchEvents()
     eventsStore.createEventDialogOpen = false
@@ -72,6 +75,8 @@ const createEvent = async () => {
       detail: e instanceof Error ? e.message : 'Failed to create event',
       life: 3000,
     })
+  } finally {
+    loading.value = false
   }
 }
 </script>
@@ -90,7 +95,7 @@ const createEvent = async () => {
     </template>
 
     <!-- FORM -->
-    <AppUiEventForm v-model="newEvent" />
+    <AppUiEventForm v-model="newEvent" :invalidAdsType="invalidAdsType" />
 
     <!-- CALL TO ACTION BUTTONS -->
     <div class="flex justify-end gap-2 mt-6">
@@ -100,7 +105,13 @@ const createEvent = async () => {
         size="small"
         @click="eventsStore.createEventDialogOpen = false"
       />
-      <Button label="Create" size="small" @click="createEvent" />
+      <Button
+        label="Create"
+        size="small"
+        @click="createEvent"
+        :loading="loading"
+        :disabled="invalidAdsType"
+      />
     </div>
   </Dialog>
 </template>
