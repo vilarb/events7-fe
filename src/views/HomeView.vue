@@ -2,6 +2,7 @@
 import { onMounted } from 'vue'
 import AppTable from '@/components/table.vue'
 import { useEventsStore } from '@/stores/event'
+import AppCreateEventDialog from '@/components/dialogs/createEvent.vue'
 
 const { fetchEvents } = useEventsStore()
 
@@ -20,5 +21,8 @@ onMounted(async () => {
 
     <!-- Router views for event details -->
     <RouterView />
+
+    <!-- Dialogs -->
+    <AppCreateEventDialog />
   </div>
 </template>

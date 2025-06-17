@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import AppHeader from './components/header.vue'
+import AppHeader from '@/components/header.vue'
 import Toast from 'primevue/toast'
-import AppCreateEventDialog from './components/dialogs/createEvent.vue'
 import Skeleton from 'primevue/skeleton'
-import { useUser } from './composables/user'
+import { useUser } from '@/composables/user'
 
 const { loading } = useUser()
 </script>
@@ -17,9 +16,6 @@ const { loading } = useUser()
     <div v-else class="flex h-[calc(100vh-56px)] w-full shrink-0 items-center justify-center">
       <Skeleton width="90%" height="90%" />
     </div>
-
-    <!-- Dialogs -->
-    <AppCreateEventDialog />
 
     <!-- Global toast componenet -->
     <Toast />
