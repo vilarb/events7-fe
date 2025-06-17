@@ -12,7 +12,7 @@ export const useApiFetch = async (path: string, options: RequestInit = {}) => {
   const defaultOptions: RequestInit = {
     headers: {
       'Content-Type': 'application/json',
-      'app-ip': user.value.ip || '',
+      'Client-IP': user.value.ip || '',
       ...headers,
     },
     ...rest,
@@ -24,6 +24,8 @@ export const useApiFetch = async (path: string, options: RequestInit = {}) => {
     const error = await response.json()
     throw new Error(error.message || 'Fetch error')
   }
+
+  if (options.method === 'DELETE') return
 
   return await response.json()
 }
