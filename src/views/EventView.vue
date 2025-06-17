@@ -14,6 +14,7 @@ import { useToast } from 'primevue/usetoast'
 import Skeleton from 'primevue/skeleton'
 import Button from 'primevue/button'
 import AppUiConfirmPopup from '@/components/dialogs/confirmPopup.vue'
+import { useEventApi } from '@/composables/api/event'
 
 const router = useRouter()
 const visible = ref(true)
@@ -22,6 +23,11 @@ const loading = ref(false)
 const deleteEventPopupVisible = ref(false)
 
 const eventsStore = useEventsStore()
+const {
+  fetchEvent: fetchEventApi,
+  updateEvent: updateEventApi,
+  deleteEvent: deleteEventApi,
+} = useEventApi()
 const toast = useToast()
 
 /**
@@ -70,7 +76,7 @@ const findOrFetchEvent = async (id: number): Promise<Event> => {
   }
 
   await new Promise((resolve) => setTimeout(resolve, 2000))
-  return await eventsStore.fetchEvent(id)
+  return await fetchEventApi(id)
 }
 
 /**
@@ -124,7 +130,7 @@ const saveEvent = async () => {
       throw new Error('No event to save')
     }
 
-    await eventsStore.updateEvent(currentEvent.value)
+    await updateEventApi(currentEvent.value)
     await eventsStore.fetchEvents()
     deleteEventPopupVisible.value = false
     closeDrawer()
@@ -154,7 +160,7 @@ const deleteEvent = async () => {
       throw new Error('No event to save')
     }
 
-    await eventsStore.deleteEvent(currentEvent.value.id)
+    await deleteEventApi(currentEvent.value.id)
     await eventsStore.fetchEvents()
     closeDrawer()
     toast.add({

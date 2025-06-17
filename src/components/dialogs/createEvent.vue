@@ -5,8 +5,10 @@ import AppUiEventForm from '@/components/ui/eventForm.vue'
 import Button from 'primevue/button'
 import { onMounted, ref } from 'vue'
 import { useToast } from 'primevue/usetoast'
+import { useEventApi } from '@/composables/api/event'
 
 const eventsStore = useEventsStore()
+const { createEvent: createEventApi } = useEventApi()
 const toast = useToast()
 const newEvent = ref<Omit<Event, 'id' | 'createdAt' | 'updatedAt'>>({
   title: '',
@@ -47,7 +49,7 @@ onMounted(() => {
  */
 const createEvent = async () => {
   try {
-    await eventsStore.createEvent(newEvent.value)
+    await createEventApi(newEvent.value)
     await eventsStore.fetchEvents()
     eventsStore.createEventDialogOpen = false
     newEvent.value = {
