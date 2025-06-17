@@ -3,11 +3,10 @@ import { useEventsStore, type Event } from '@/stores/event'
 import Dialog from 'primevue/dialog'
 import AppUiEventForm from '@/components/ui/eventForm.vue'
 import Button from 'primevue/button'
-import { onMounted, ref, computed } from 'vue'
+import { ref, computed } from 'vue'
 import { useToast } from 'primevue/usetoast'
 import { useEventApi } from '@/composables/api/event'
 import { useUser } from '@/composables/user'
-import { useApiFetch } from '@/composables/baseApi'
 
 const eventsStore = useEventsStore()
 const { createEvent: createEventApi } = useEventApi()
@@ -20,28 +19,13 @@ const newEvent = ref<Omit<Event, 'id' | 'createdAt' | 'updatedAt'>>({
   priority: 1,
 })
 const loading = ref<boolean>(false)
-const allowAdsType = ref<boolean>(false)
 
 const invalidAdsType = computed(() => {
-  return !allowAdsType.value && newEvent.value.type === 'ads'
+  return !user.value.adsAuthorized && newEvent.value.type === 'ads'
 })
 
 defineOptions({
   name: 'AppCreateEventDialog',
-})
-
-const validateAdsType = async () => {
-  try {
-    const { ads } = await useApiFetch(`/users/authorize?ip=${user.value.ip}`)
-    allowAdsType.value = ads === 'sure, why not!'
-  } catch (e) {
-    console.log('error', e)
-    allowAdsType.value = false
-  }
-}
-
-onMounted(() => {
-  validateAdsType()
 })
 
 /**

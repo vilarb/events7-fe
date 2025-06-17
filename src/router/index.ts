@@ -27,10 +27,11 @@ const router = createRouter({
  */
 router.beforeEach(async () => {
   try {
-    const { user, getUserIp, loading } = useUser()
+    const { user, getUserIp, loading, authorizeAdsType } = useUser()
     if (user.value.ip === null) {
       loading.value = true
       await getUserIp()
+      await authorizeAdsType()
       loading.value = false
     }
   } catch (error) {
