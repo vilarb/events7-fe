@@ -94,7 +94,7 @@ const createEvent = async () => {
         size="small"
         @click="createEvent"
         :loading="loading"
-        :disabled="invalidAdsType"
+        :disabled="invalidAdsType || loading"
       />
     </div>
   </Dialog>
