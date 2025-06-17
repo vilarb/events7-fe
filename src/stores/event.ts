@@ -1,6 +1,7 @@
 import { ref, watch } from 'vue'
 import { defineStore } from 'pinia'
 import { useToast } from 'primevue/usetoast'
+import { useApiFetch } from '@/composables/baseApi'
 
 export interface Event {
   id: number
@@ -83,19 +84,10 @@ export const useEventsStore = defineStore('events', () => {
       }
 
       const paramsString = new URLSearchParams(params)
-      const response = await fetch(`http://localhost:3000/events?${paramsString}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          accept: 'application/json',
-        },
+
+      const eventsData = await useApiFetch(`/events?${paramsString}`, {
         signal: abortController.signal,
       })
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch events')
-      }
-
-      const eventsData = await response.json()
 
       events.value = eventsData.events
       totalResults.value = eventsData.total
@@ -117,79 +109,36 @@ export const useEventsStore = defineStore('events', () => {
    * Create a new event in the database
    */
   async function createEvent(event: Omit<Event, 'id' | 'createdAt' | 'updatedAt'>): Promise<Event> {
-    const response = await fetch(`http://localhost:3000/events`, {
+    return await useApiFetch(`/events`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        accept: 'application/json',
-      },
       body: JSON.stringify(event),
     })
-
-    const eventData = await response.json()
-    if (!response.ok) {
-      throw new Error(eventData.error)
-    }
-
-    return eventData
   }
 
   /**
    * Fetch an event from the database
    */
   async function fetchEvent(id: Event['id']): Promise<Event> {
-    const response = await fetch(`http://localhost:3000/events/${id}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        accept: 'application/json',
-      },
-    })
-
-    const eventData = await response.json()
-    if (!response.ok) {
-      throw new Error(eventData.error)
-    }
-
-    return eventData
+    return await useApiFetch(`/events/${id}`)
   }
 
   /**
    * Update an event in the database
    */
   async function updateEvent(event: Event): Promise<Event> {
-    const response = await fetch(`http://localhost:3000/events/${event.id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        accept: 'application/json',
-      },
+    return await useApiFetch(`/events/${event.id}`, {
+      method: 'PATCH',
       body: JSON.stringify(event),
     })
-
-    const eventData = await response.json()
-    if (!response.ok) {
-      throw new Error(eventData.error)
-    }
-
-    return eventData
   }
 
   /**
    * Delete an event in the database
    */
   async function deleteEvent(id: Event['id']): Promise<void> {
-    const response = await fetch(`http://localhost:3000/events/${id}`, {
+    return await useApiFetch(`/events/${id}`, {
       method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        accept: 'application/json',
-      },
     })
-
-    if (!response.ok) {
-      throw new Error('Failed to delete event')
-    }
   }
 
   return {
