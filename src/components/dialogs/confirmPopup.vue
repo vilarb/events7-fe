@@ -14,6 +14,7 @@ const props = defineProps<{
   confirmLabel?: string
   confirmSeverity?: string
   cancelLabel?: string
+  loading?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -47,6 +48,7 @@ const emit = defineEmits<{
         @click="emit('confirm')"
         :severity="props.confirmSeverity || 'primary'"
         size="small"
+        :loading="props.loading"
       />
     </template>
   </Dialog>

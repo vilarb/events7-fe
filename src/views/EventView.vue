@@ -6,7 +6,7 @@
  * If the event is not found, it will navigate to the home view.
  */
 import Drawer from 'primevue/drawer'
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, ref, watch, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useEventsStore, type Event } from '@/stores/event'
 import AppUiEventForm from '@/components/ui/eventForm.vue'
@@ -15,10 +15,12 @@ import Skeleton from 'primevue/skeleton'
 import Button from 'primevue/button'
 import AppUiConfirmPopup from '@/components/dialogs/confirmPopup.vue'
 import { useEventApi } from '@/composables/api/event'
+import { useUser } from '@/composables/user'
 
 const router = useRouter()
 const visible = ref(true)
 const currentEvent = ref<Event | null>(null)
+const loadingPage = ref(false)
 const loading = ref(false)
 const deleteEventPopupVisible = ref(false)
 
@@ -28,7 +30,12 @@ const {
   updateEvent: updateEventApi,
   deleteEvent: deleteEventApi,
 } = useEventApi()
+const { user } = useUser()
 const toast = useToast()
+
+const invalidAdsType = computed(() => {
+  return !user.value.adsAuthorized && currentEvent.value?.type === 'ads'
+})
 
 /**
  * Close the drawer and navigate to the home view when the drawer is closed.
@@ -85,12 +92,7 @@ const findOrFetchEvent = async (id: number): Promise<Event> => {
 const handleError = (error: unknown) => {
   console.error(error)
   closeDrawer()
-  toast.add({
-    severity: 'error',
-    summary: 'Error',
-    detail: error instanceof Error ? error.message : 'Failed to fetch event',
-    life: 2000,
-  })
+  displayToast('error', 'Error', error instanceof Error ? error.message : 'Failed to fetch event')
 }
 
 /**
@@ -104,7 +106,7 @@ onMounted(async () => {
   }
 
   try {
-    loading.value = true
+    loadingPage.value = true
     const eventId = getEventId()
 
     if (!eventId) {
@@ -116,9 +118,18 @@ onMounted(async () => {
   } catch (error) {
     handleError(error)
   } finally {
-    loading.value = false
+    loadingPage.value = false
   }
 })
+
+const displayToast = (severity: string, summary: string, detail: string) => {
+  toast.add({
+    severity,
+    summary,
+    detail,
+    life: 2000,
+  })
+}
 
 /**
  * Save the event to the database.
@@ -126,6 +137,7 @@ onMounted(async () => {
  */
 const saveEvent = async () => {
   try {
+    loading.value = true
     if (!currentEvent.value) {
       throw new Error('No event to save')
     }
@@ -134,19 +146,11 @@ const saveEvent = async () => {
     await eventsStore.fetchEvents()
     deleteEventPopupVisible.value = false
     closeDrawer()
-    toast.add({
-      severity: 'success',
-      summary: 'Success',
-      detail: 'Event saved successfully',
-      life: 2000,
-    })
+    displayToast('success', 'Success', 'Event saved successfully')
   } catch (error) {
-    toast.add({
-      severity: 'error',
-      summary: 'Error',
-      detail: error instanceof Error ? error.message : 'Failed to save event',
-      life: 2000,
-    })
+    displayToast('error', 'Error', error instanceof Error ? error.message : 'Failed to save event')
+  } finally {
+    loading.value = false
   }
 }
 
@@ -156,6 +160,7 @@ const saveEvent = async () => {
  */
 const deleteEvent = async () => {
   try {
+    loading.value = true
     if (!currentEvent.value) {
       throw new Error('No event to save')
     }
@@ -163,20 +168,12 @@ const deleteEvent = async () => {
     await deleteEventApi(currentEvent.value.id)
     await eventsStore.fetchEvents()
     closeDrawer()
-    toast.add({
-      severity: 'success',
-      summary: 'Success',
-      detail: 'Event deleted successfully',
-      life: 2000,
-    })
+    displayToast('success', 'Success', 'Event deleted successfully')
   } catch (error) {
     console.error(error)
-    toast.add({
-      severity: 'error',
-      summary: 'Error',
-      detail: error instanceof Error ? error.message : 'Failed to save event',
-      life: 2000,
-    })
+    displayToast('error', 'Error', error instanceof Error ? error.message : 'Failed to save event')
+  } finally {
+    loading.value = false
   }
 }
 </script>
@@ -198,11 +195,11 @@ const deleteEvent = async () => {
     </template>
 
     <div class="flex flex-col gap-4 h-full" v-if="currentEvent">
-      <AppUiEventForm v-model="currentEvent" />
+      <AppUiEventForm v-model="currentEvent" :invalidAdsType="invalidAdsType" />
 
       <div class="flex justify-end gap-2">
         <Button label="Close" @click="closeDrawer" severity="secondary" size="small" />
-        <Button label="Update event" @click="saveEvent" size="small" />
+        <Button label="Update event" @click="saveEvent" size="small" :loading="loading" />
       </div>
 
       <div
@@ -227,6 +224,7 @@ const deleteEvent = async () => {
             size="small"
             severity="danger"
             outlined
+            :disabled="loading"
           />
         </div>
       </div>
@@ -245,6 +243,8 @@ const deleteEvent = async () => {
       confirmLabel="Delete"
       confirmSeverity="danger"
       @confirm="deleteEvent"
+      :loading="loading"
+      :disabled="invalidAdsType"
     />
   </Drawer>
 </template>
