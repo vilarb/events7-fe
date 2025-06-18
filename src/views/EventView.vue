@@ -189,8 +189,10 @@ const deleteEvent = async () => {
   >
     <template #header>
       <div class="flex flex-col gap-1">
-        <h6 class="text-xs uppercase opacity-60 font-medium">Event details</h6>
-        <h1 class="text-2xl font-bold" v-if="currentEvent">#{{ currentEvent.id }}</h1>
+        <h6 class="text-xs uppercase opacity-60 font-medium">
+          Event details #{{ currentEvent?.id }}
+        </h6>
+        <h1 class="text-2xl font-bold" v-if="currentEvent">{{ currentEvent?.title }}</h1>
         <Skeleton v-else height="2rem" />
       </div>
     </template>
