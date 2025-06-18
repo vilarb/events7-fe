@@ -1,5 +1,5 @@
 import { useApiFetch } from '@/composables/baseApi'
-import type { Event } from '@/stores/event'
+import type { Event } from '@/types/event'
 
 export const useEventApi = () => {
   /**

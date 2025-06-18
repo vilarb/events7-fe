@@ -7,3 +7,5 @@ export interface Event {
   createdAt: string
   updatedAt: string
 }
+
+export type EventFormData = Omit<Event, 'id' | 'createdAt' | 'updatedAt'>

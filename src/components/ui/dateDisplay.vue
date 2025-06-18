@@ -11,7 +11,7 @@ const props = defineProps<{
 <template>
   <div>
     {{
-      new Date(props.date).toLocaleString('si-SL', {
+      new Date(props.date).toLocaleString('en-US', {
         timeStyle: 'short',
         dateStyle: 'medium',
         timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
