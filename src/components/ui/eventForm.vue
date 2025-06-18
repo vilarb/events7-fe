@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { Event } from '@/types/event'
 import { useEvents } from '@/composables/events'
-import { defineModel } from 'vue'
 import Select from 'primevue/select'
 import InputText from 'primevue/inputtext'
 import Textarea from 'primevue/textarea'
