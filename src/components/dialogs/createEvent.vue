@@ -64,6 +64,10 @@ const createEvent = async () => {
     loading.value = false
   }
 }
+
+defineExpose({
+  newEvent,
+})
 </script>
 
 <template>
@@ -91,6 +95,7 @@ const createEvent = async () => {
         @click="createEventDialogOpen = false"
       />
       <Button
+        data-test-id="createButton"
         label="Create"
         size="small"
         @click="createEvent"

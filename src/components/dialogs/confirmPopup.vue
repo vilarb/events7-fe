@@ -38,12 +38,14 @@ const emit = defineEmits<{
 
     <template #footer>
       <Button
+        data-test-id="cancelButton"
         :label="props.cancelLabel || 'Cancel'"
         @click="visible = false"
         severity="secondary"
         size="small"
       />
       <Button
+        data-test-id="confirmButton"
         :label="props.confirmLabel || 'Confirm'"
         @click="emit('confirm')"
         :severity="props.confirmSeverity || 'primary'"
