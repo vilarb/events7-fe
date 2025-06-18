@@ -8,7 +8,8 @@
 import Drawer from 'primevue/drawer'
 import { onMounted, ref, watch, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { useEventsStore, type Event } from '@/stores/event'
+import type { Event } from '@/types/event'
+import { useEvents } from '@/composables/events'
 import AppUiEventForm from '@/components/ui/eventForm.vue'
 import { useToast } from 'primevue/usetoast'
 import Skeleton from 'primevue/skeleton'
@@ -24,7 +25,7 @@ const loadingPage = ref(false)
 const loading = ref(false)
 const deleteEventPopupVisible = ref(false)
 
-const eventsStore = useEventsStore()
+const { activeEvent, fetchEvents, events } = useEvents()
 const {
   fetchEvent: fetchEventApi,
   updateEvent: updateEventApi,
@@ -43,7 +44,7 @@ const invalidAdsType = computed(() => {
 const closeDrawer = () => {
   visible.value = false
   setTimeout(() => {
-    eventsStore.activeEvent = null
+    activeEvent.value = null
     currentEvent.value = null
     router.push('/')
   }, 150)
@@ -55,7 +56,7 @@ const closeDrawer = () => {
 watch(visible, (newVal) => {
   if (!newVal) {
     setTimeout(() => {
-      eventsStore.activeEvent = null
+      activeEvent.value = null
       currentEvent.value = null
       router.push('/')
     }, 150)
@@ -77,7 +78,7 @@ const getEventId = (): number | null => {
  * Find event in the store or fetch it from the API
  */
 const findOrFetchEvent = async (id: number): Promise<Event> => {
-  const existingEvent = eventsStore.events.find((event) => event.id === id)
+  const existingEvent = events.value.find((event) => event.id === id)
   if (existingEvent) {
     return existingEvent
   }
@@ -100,8 +101,8 @@ const handleError = (error: unknown) => {
  * Set the current event to the active event.
  */
 onMounted(async () => {
-  if (eventsStore.activeEvent) {
-    currentEvent.value = { ...eventsStore.activeEvent }
+  if (activeEvent.value) {
+    currentEvent.value = { ...activeEvent.value }
     return
   }
 
@@ -113,8 +114,8 @@ onMounted(async () => {
       throw new Error('No readable event ID provided')
     }
 
-    eventsStore.activeEvent = await findOrFetchEvent(eventId)
-    currentEvent.value = { ...eventsStore.activeEvent }
+    activeEvent.value = await findOrFetchEvent(eventId)
+    currentEvent.value = { ...activeEvent.value }
   } catch (error) {
     handleError(error)
   } finally {
@@ -143,7 +144,7 @@ const saveEvent = async () => {
     }
 
     await updateEventApi(currentEvent.value)
-    await eventsStore.fetchEvents()
+    await fetchEvents()
     deleteEventPopupVisible.value = false
     closeDrawer()
     displayToast('success', 'Success', 'Event saved successfully')
@@ -166,7 +167,7 @@ const deleteEvent = async () => {
     }
 
     await deleteEventApi(currentEvent.value.id)
-    await eventsStore.fetchEvents()
+    await fetchEvents()
     closeDrawer()
     displayToast('success', 'Success', 'Event deleted successfully')
   } catch (error) {

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useToast } from 'primevue/usetoast'
-import { useEventsStore } from '@/stores/event'
+import { useEvents } from '@/composables/events'
 
 const toast = useToast()
 
@@ -10,7 +10,7 @@ defineOptions({
   name: 'AppHeader',
 })
 
-const eventsStore = useEventsStore()
+const { search } = useEvents()
 
 onMounted(() => {
   window.addEventListener('keydown', (e) => {
@@ -47,7 +47,7 @@ onMounted(() => {
         ref="searchInput"
         class="mx-auto h-9 w-full rounded-xl border border-neutral-600 bg-neutral-800 px-4 pl-10 font-normal text-white placeholder:text-neutral-500"
         placeholder="Search title/description"
-        v-model="eventsStore.search"
+        v-model="search"
       />
 
       <span

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { Event } from '@/stores/event'
-import { useEventsStore } from '@/stores/event'
+import type { Event } from '@/types/event'
+import { useEvents } from '@/composables/events'
 import { defineModel } from 'vue'
 import Select from 'primevue/select'
 import InputText from 'primevue/inputtext'
@@ -26,7 +26,7 @@ const event = defineModel<Omit<Event, 'id' | 'createdAt' | 'updatedAt'>>({
   }),
 })
 
-const eventsStore = useEventsStore()
+const { eventTypes } = useEvents()
 </script>
 
 <template>
@@ -38,7 +38,7 @@ const eventsStore = useEventsStore()
       <Select
         id="type"
         v-model="event.type"
-        :options="eventsStore.eventTypes"
+        :options="eventTypes"
         size="small"
         :invalid="invalidAdsType"
       >

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { useEventsStore, type Event } from '@/stores/event'
+import { useEvents } from '@/composables/events'
+import type { Event } from '@/types/event'
 import Dialog from 'primevue/dialog'
 import AppUiEventForm from '@/components/ui/eventForm.vue'
 import Button from 'primevue/button'
@@ -8,7 +9,7 @@ import { useToast } from 'primevue/usetoast'
 import { useEventApi } from '@/composables/api/event'
 import { useUser } from '@/composables/user'
 
-const eventsStore = useEventsStore()
+const { createEventDialogOpen, fetchEvents } = useEvents()
 const { createEvent: createEventApi } = useEventApi()
 const { user } = useUser()
 const toast = useToast()
@@ -37,8 +38,8 @@ const createEvent = async () => {
   try {
     loading.value = true
     await createEventApi(newEvent.value)
-    await eventsStore.fetchEvents()
-    eventsStore.createEventDialogOpen = false
+    await fetchEvents()
+    createEventDialogOpen.value = false
     newEvent.value = {
       title: '',
       description: '',
@@ -67,7 +68,7 @@ const createEvent = async () => {
 
 <template>
   <Dialog
-    v-model:visible="eventsStore.createEventDialogOpen"
+    v-model:visible="createEventDialogOpen"
     modal
     :draggable="false"
     dismissable-mask
@@ -87,7 +88,7 @@ const createEvent = async () => {
         label="Cancel"
         severity="secondary"
         size="small"
-        @click="eventsStore.createEventDialogOpen = false"
+        @click="createEventDialogOpen = false"
       />
       <Button
         label="Create"

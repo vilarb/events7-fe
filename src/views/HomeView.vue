@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import AppTable from '@/components/table.vue'
-import { useEventsStore } from '@/stores/event'
 import AppCreateEventDialog from '@/components/dialogs/createEvent.vue'
+import { useEvents } from '@/composables/events'
 
-const { fetchEvents } = useEventsStore()
+const { fetchEvents } = useEvents()
 
 onMounted(async () => {
   await fetchEvents()

@@ -1,14 +1,12 @@
 <script setup lang="ts">
-import { useEventsStore } from '@/stores/event'
+import { useEvents } from '@/composables/events'
 import type { Event } from '@/stores/event'
-import { computed } from 'vue'
 
 defineOptions({
   name: 'AppTableHeader',
 })
 
-const eventsStore = useEventsStore()
-const filter = computed(() => eventsStore.typeFilter)
+const { typeFilter, fetchEvents } = useEvents()
 
 const filterOptions = [
   { value: 'all', label: 'All' },
@@ -19,8 +17,8 @@ const filterOptions = [
 ] as const
 
 const setFilter = (type: Event['type'] | 'all') => {
-  eventsStore.typeFilter = type === 'all' ? null : type
-  eventsStore.fetchEvents()
+  typeFilter.value = type === 'all' ? null : type
+  fetchEvents()
 }
 </script>
 
@@ -31,7 +29,8 @@ const setFilter = (type: Event['type'] | 'all') => {
       :key="option.value"
       class="cursor-pointer hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md px-2 py-1 transition-all"
       :class="{
-        'dark:!bg-zinc-700 bg-zinc-200': option.value === 'all' ? !filter : filter === option.value,
+        'dark:!bg-zinc-700 bg-zinc-200':
+          option.value === 'all' ? !typeFilter : typeFilter === option.value,
       }"
       @click="setFilter(option.value)"
     >
