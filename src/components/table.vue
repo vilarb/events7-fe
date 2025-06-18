@@ -49,6 +49,7 @@ const sortTable = (event: DataTableSortEvent) => {
 
   fetchEvents()
 }
+defineExpose({ changeTablePage, sortTable })
 </script>
 
 <template>
@@ -81,6 +82,18 @@ const sortTable = (event: DataTableSortEvent) => {
       >
         <template #header>
           <AppTableHeader />
+        </template>
+
+        <template #empty>
+          <div class="flex h-full flex-col items-center justify-center p-4">
+            <p class="text-sm text-zinc-500 italic">No events found</p>
+          </div>
+        </template>
+
+        <template #loading>
+          <div class="flex h-full flex-col items-center justify-center p-4">
+            <i class="pi pi-spin pi-spinner text-2xl text-zinc-500"></i>
+          </div>
         </template>
 
         <Column field="id" header="#ID" sortable></Column>
