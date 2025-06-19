@@ -110,6 +110,10 @@ The application uses Vue 3 Composition API instead of a traditional state manage
 - `useUser()` - User authentication and IP detection
 - `useApiFetch()` - Base API functionality
 
+## Testing
+
+All directories include a `__tests__` directory which includes the unit tests for the files in that directory.
+
 ### Unit Tests
 
 Run unit tests with:
