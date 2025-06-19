@@ -1,5 +1,7 @@
 # <img src="public/favicono7.png" width="25" alt="Events7 Logo" /> Events7
 
+Hi. Welcome to the Events7 Fullstack Web Developer Expertise Test. This readme is mostly generated, but i have added some caveats that could be important and clarify some things at the end. Building this was quite fun. Hope to hear from you soon so we can talk the project over.
+
 ## 🚀 Features
 
 - **Event Management**: Create, view, and manage events with different types (crosspromo, liveops, app, ads)
