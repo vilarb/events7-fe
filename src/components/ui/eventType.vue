@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Event } from '@/stores/event'
+import type { Event } from '@/types/event'
 import { computed } from 'vue'
 
 defineOptions({

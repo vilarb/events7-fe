@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useEvents } from '@/composables/events'
-import type { Event } from '@/stores/event'
+import type { Event } from '@/types/event'
 
 defineOptions({
   name: 'AppTableHeader',
@@ -11,9 +11,9 @@ const { typeFilter, fetchEvents, eventTypes } = useEvents()
 
 const filterOptions = computed(() => {
   return [
-    { value: 'all', label: 'All' },
+    { value: 'all' as const, label: 'All' },
     ...eventTypes.value.map((type) => ({
-      value: type,
+      value: type as Event['type'],
       label: type.charAt(0).toUpperCase() + type.slice(1),
     })),
   ]

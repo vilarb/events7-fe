@@ -27,7 +27,7 @@ const eventTypes = ref<Event['type'][]>(['crosspromo', 'liveops', 'app', 'ads'])
 const loading = ref<boolean>(false)
 
 // Events list debounce timeout
-const debounceTimeout = ref<number | null>(null)
+const debounceTimeout = ref<ReturnType<typeof setTimeout> | null>(null)
 
 // Events list abort controller
 const abortController = new AbortController()
