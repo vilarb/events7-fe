@@ -56,10 +56,16 @@ defineExpose({ changeTablePage, sortTable })
   <div class="flex w-full flex-col gap-6 p-6">
     <div class="flex items-center justify-between">
       <div class="text-xl font-medium">Event management</div>
-      <Button label="Create event" size="small" @click="createEventDialogOpen = true" />
+      <Button
+        data-test-id="create-event-button"
+        label="Create event"
+        size="small"
+        @click="createEventDialogOpen = true"
+      />
     </div>
     <div class="border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden">
       <DataTable
+        data-test-id="events-table"
         :value="events"
         stripedRows
         scrollable

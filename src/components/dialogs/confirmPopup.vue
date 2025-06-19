@@ -30,6 +30,7 @@ const emit = defineEmits<{
     position="top"
     dismissableMask
     class="max-w-[350px]"
+    data-test-id="confirm-popup"
   >
     <template #header>
       <h3 class="text-lg font-medium">{{ props.title || 'Confirmation' }}</h3>
@@ -38,14 +39,14 @@ const emit = defineEmits<{
 
     <template #footer>
       <Button
-        data-test-id="cancelButton"
+        data-test-id="cancel-button"
         :label="props.cancelLabel || 'Cancel'"
         @click="visible = false"
         severity="secondary"
         size="small"
       />
       <Button
-        data-test-id="confirmButton"
+        data-test-id="confirm-button"
         :label="props.confirmLabel || 'Confirm'"
         @click="emit('confirm')"
         :severity="props.confirmSeverity || 'primary'"

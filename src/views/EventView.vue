@@ -221,6 +221,7 @@ const deleteEvent = async () => {
         </div>
         <div class="flex-shrink-0">
           <Button
+            data-test-id="delete-event-button"
             label="Delete event"
             icon="pi pi-trash"
             @click="deleteEventPopupVisible = true"

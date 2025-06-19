@@ -33,7 +33,7 @@ onMounted(() => {
 
 <template>
   <div class="flex w-full grow items-center px-6">
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-2" data-test-id="header-logo">
       <img src="/favicono7.png" class="h-6" />
       <h1 class="text-2xl font-semibold text-neutral-100">Events7</h1>
     </div>

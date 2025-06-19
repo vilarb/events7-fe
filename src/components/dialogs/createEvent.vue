@@ -77,6 +77,7 @@ defineExpose({
     :draggable="false"
     dismissable-mask
     style="width: 450px"
+    data-test-id="create-event-dialog"
   >
     <!-- HEADER -->
     <template #header>
