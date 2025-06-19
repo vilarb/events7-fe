@@ -9,7 +9,7 @@ Hi. Welcome to the Events7 Fullstack Web Developer Expertise Test. This readme i
 - **Real-time Search**: Debounced search functionality to prevent API spam
 - **Pagination**: Efficient pagination with customizable page sizes
 - **Sorting**: Sort events by various fields in ascending or descending order
-- **Dark Mode**: Toggle between light and dark themes
+- **Dark Mode**: Toggle between light and dark themes (default system setting)
 - **Responsive Design**: Mobile-friendly interface
 - **Type Safety**: Full TypeScript support for better development experience
 - **Testing**: Comprehensive unit and end-to-end testing with Vitest and Playwright
