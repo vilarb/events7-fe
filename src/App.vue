@@ -13,7 +13,10 @@ const { loading } = useUser()
 
     <!-- Router views -->
     <RouterView v-if="!loading" />
-    <div v-else class="flex h-[calc(100vh-56px)] w-full shrink-0 items-center justify-center">
+    <div
+      v-else
+      class="flex h-[calc(100vh-56px)] w-full shrink-0 items-center rounded-t-2xl justify-center bg-zinc-200 dark:bg-zinc-800"
+    >
       <Skeleton width="90%" height="90%" />
     </div>
 
