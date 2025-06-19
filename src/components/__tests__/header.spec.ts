@@ -27,4 +27,16 @@ describe('AppHeader', () => {
 
     expect(search.value).toBe('test')
   })
+
+  it('opens docs in a new tab', () => {
+    Object.defineProperty(window, 'open', {
+      writable: true,
+      value: vi.fn(),
+    })
+
+    const wrapper = mount(AppHeader)
+    const docsButton = wrapper.find('[data-test-id="docs-button"]')
+    docsButton.trigger('click')
+    expect(window.open).toHaveBeenCalledWith(`${import.meta.env.VITE_API_URL}/docs`, '_blank')
+  })
 })

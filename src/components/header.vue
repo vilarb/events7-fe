@@ -29,6 +29,10 @@ onMounted(() => {
     }
   })
 })
+
+const openDocs = () => {
+  window.open(`${import.meta.env.VITE_API_URL}/docs`, '_blank')
+}
 </script>
 
 <template>
@@ -58,10 +62,13 @@ onMounted(() => {
     </div>
 
     <div class="flex items-center gap-1.5">
-      <div class="h-7 w-7 rounded-lg bg-blue-300 overflow-hidden">
-        <!-- <UiGravatar :email="username || ''" :size="28" /> -->
+      <div
+        data-test-id="docs-button"
+        class="text-sm opacity-60 transition-opacity hover:opacity-100 cursor-pointer px-2 py-1"
+        @click="openDocs"
+      >
+        Docs
       </div>
-      <!-- <p class="text-xs text-neutral-200">{{ username }}</p> -->
     </div>
   </div>
 </template>
