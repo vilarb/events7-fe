@@ -1,64 +1,174 @@
-# .
+<p align="center">
+  <img src="public/favicono7.png" width="37" alt="Nest Logo" /></a>
+  <span style="font-size: 50px; font-weight: 600">Events7</span>
+</p>
 
-This template should help get you started developing with Vue 3 in Vite.
+## 🚀 Features
 
-## Recommended IDE Setup
+- **Event Management**: Create, view, and manage events with different types (crosspromo, liveops, app, ads)
+- **Advanced Filtering**: Filter events by type, priority, and search through titles and descriptions
+- **Real-time Search**: Debounced search functionality to prevent API spam
+- **Pagination**: Efficient pagination with customizable page sizes
+- **Sorting**: Sort events by various fields in ascending or descending order
+- **Dark Mode**: Toggle between light and dark themes
+- **Responsive Design**: Mobile-friendly interface
+- **Type Safety**: Full TypeScript support for better development experience
+- **Testing**: Comprehensive unit and end-to-end testing with Vitest and Playwright
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## 🛠️ Tech Stack
 
-## Type Support for `.vue` Imports in TS
+- **Framework**: Vue 3 with Composition API
+- **Language**: TypeScript
+- **UI Components**: PrimeVue 4
+- **Styling**: Tailwind CSS 4
+- **Routing**: Vue Router 4
+- **Build Tool**: Vite
+- **Testing**:
+  - Unit Tests: Vitest + Vue Test Utils
+  - E2E Tests: Playwright
+- **Linting**: ESLint + Prettier
+- **Icons**: PrimeIcons
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+## 📋 Prerequisites
 
-## Customize configuration
+- Node.js (version 18 or higher)
+- npm or yarn package manager
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+## 🚀 Getting Started
 
-## Project Setup
+### Installation
 
-```sh
+1. Clone the repository:
+
+```bash
+git clone git@github.com:vilarb/events7-fe.git
+cd events7-fe
+```
+
+2. Install dependencies:
+
+```bash
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+3. Start the development server:
 
-```sh
+```bash
 npm run dev
 ```
 
-### Type-Check, Compile and Minify for Production
+The application will be available at `http://localhost:5173`
 
-```sh
-npm run build
+### Available Scripts
+
+```bash
+# Start development server
+- `npm run dev`
+
+# Build for production
+- `npm run build`
+
+# Preview production build
+- `npm run preview`
+
+# Run unit tests
+- `npm run test:unit`
+
+# Run end-to-end tests
+- `npm run test:e
+
+# Lint and fix code2e`
+- `npm run lint`
+
+# Format code with Prettier
+- `npm run format`
+
+# Run TypeScript type checking
+- `npm run type-check`
 ```
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
+## 📁 Project Structure
 
-```sh
+```
+src/
+├── components/          # Vue components
+│   ├── dialogs/        # Dialog components
+│   ├── table/          # Table-related components
+│   └── ui/             # Reusable UI components
+├── composables/        # Vue composables for state management
+│   └── api/           # API-related composables
+├── router/            # Vue Router configuration
+├── types/             # TypeScript type definitions
+├── views/             # Page components
+└── assets/            # Static assets
+```
+
+## 💼 State Management
+
+The application uses Vue 3 Composition API instead of a traditional state management library. The state is therefore managed with custom composables:
+
+- `useEvents()` - Event data and operations
+- `useUser()` - User authentication and IP detection
+- `useApiFetch()` - Base API functionality
+
+### Unit Tests
+
+Run unit tests with:
+
+````bash
 npm run test:unit
-```
 
-### Run End-to-End Tests with [Playwright](https://playwright.dev)
+## 🧪 Testing
 
-```sh
-# Install browsers for the first run
-npx playwright install
+### Unit Tests
 
-# When testing on CI, must build the project first
-npm run build
+Run unit tests with:
 
-# Runs the end-to-end tests
+```bash
+npm run test:unit
+````
+
+Tests are located in `__tests__` directories alongside their corresponding components.
+
+### End-to-End Tests
+
+Run E2E tests with:
+
+```bash
 npm run test:e2e
-# Runs the tests only on Chromium
-npm run test:e2e -- --project=chromium
-# Runs the tests of a specific file
-npm run test:e2e -- tests/example.spec.ts
-# Runs the tests in debug mode
-npm run test:e2e -- --debug
 ```
 
-### Lint with [ESLint](https://eslint.org/)
+Uses Playwright for browser automation and testing.
 
-```sh
-npm run lint
+## 🎨 Styling
+
+The application uses Tailwind CSS 4 with PrimeVue components for a consistent and modern design. The theme system supports:
+
+- Light and dark mode (system)
+- Responsive design
+- Custom component styling
+- PrimeVue theme integration
+
+## 🔧 Configuration
+
+### Environment Variables
+
+Create a `.env` file in the root directory for environment-specific configuration:
+
+```env
+VITE_API_BASE_URL=your_backend_base_url
 ```
+
+## 💡 Caveats
+
+### Authentication
+
+The app uses the /user/authorization endpoint that is fairly unreliable. This means that while the user can intially be allowed to create events of type ADS, this can change by the time the user actually tries to create an event and vice versa.
+
+This can somewhat effect the user experience, but must be taken into consideration due to the unreliability of the https://europe-west1-o7tools.cloudfunctions.net/fun7-ad-partner-expertise-test api.
+
+### Getting the IP address
+
+As the backend currently lives in a docker container on the same machine without a proxy, a helper is implemented. This means that the ip is acquired by an api call to the free https://api.ipify.org service before each route change (in case it has not yet ben acquired).
+
+✽ Removing this helper call will not effect the working of the aplication, but the user will never get authorization for creating the events of type ads, due to the fact that the API call will never leave the local network.
