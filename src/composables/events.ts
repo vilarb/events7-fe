@@ -30,7 +30,7 @@ const loading = ref<boolean>(false)
 const debounceTimeout = ref<ReturnType<typeof setTimeout> | null>(null)
 
 // Events list abort controller
-const abortController = new AbortController()
+const abortController = ref<AbortController>(new AbortController())
 
 // Events list create event dialog open state
 const createEventDialogOpen = ref<boolean>(false)
@@ -82,6 +82,9 @@ export const useEvents = () => {
    */
   async function fetchEvents() {
     try {
+      abortController.value.abort('Aborting fetch')
+      abortController.value = new AbortController()
+
       loading.value = true
 
       const params: Record<string, string> = {
@@ -102,21 +105,25 @@ export const useEvents = () => {
       const paramsString = new URLSearchParams(params)
 
       const eventsData = await useApiFetch(`/events?${paramsString}`, {
-        signal: abortController.signal,
+        signal: abortController.value.signal,
       })
 
       events.value = eventsData.events
       totalResults.value = eventsData.total
       totalPages.value = Math.ceil(eventsData.total / perPage.value)
+      loading.value = false
     } catch (e) {
-      console.error(e)
+      if (typeof e === 'string' && e === 'Aborting fetch') {
+        return
+      }
+
       toast.add({
         severity: 'error',
         summary: 'Error',
         detail: e instanceof Error ? e.message : 'Failed to fetch events',
         life: 3000,
       })
-    } finally {
+
       loading.value = false
     }
   }
