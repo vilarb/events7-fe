@@ -1,7 +1,4 @@
-<p align="center">
-  <img src="public/favicono7.png" width="37" alt="Nest Logo" /></a>
-  <span style="font-size: 50px; font-weight: 600">Events7</span>
-</p>
+# <img src="public/favicono7.png" width="25" alt="Events7 Logo" /> Events7
 
 ## 🚀 Features
 
@@ -115,18 +112,9 @@ The application uses Vue 3 Composition API instead of a traditional state manage
 
 Run unit tests with:
 
-````bash
-npm run test:unit
-
-## 🧪 Testing
-
-### Unit Tests
-
-Run unit tests with:
-
 ```bash
 npm run test:unit
-````
+```
 
 Tests are located in `__tests__` directories alongside their corresponding components.
 
