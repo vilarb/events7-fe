@@ -74,7 +74,7 @@ The application will be available at `http://localhost:5173`
 - `npm run test:unit`
 
 # Run end-to-end tests
-- `npm run test:e
+- `npm run test:e2e`
 
 # Lint and fix code2e`
 - `npm run lint`
