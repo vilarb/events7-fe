@@ -10,6 +10,7 @@ import { useEvents } from '@/composables/events'
 import { useRouter } from 'vue-router'
 import AppTableHeader from './table/header.vue'
 import AppUiEventType from './ui/eventType.vue'
+import AppUiEventPriority from './ui/eventPriority.vue'
 import AppUiDateDisplay from './ui/dateDisplay.vue'
 
 defineOptions({
@@ -131,7 +132,11 @@ defineExpose({ changeTablePage, sortTable })
             </div>
           </template>
         </Column>
-        <Column field="priority" header="Priority" sortable> </Column>
+        <Column field="priority" header="Priority" sortable>
+          <template #body="slotProps">
+            <AppUiEventPriority :priority="slotProps.data.priority" />
+          </template>
+        </Column>
         <Column field="createdAt" header="Created" sortable>
           <template #body="slotProps">
             <AppUiDateDisplay :date="slotProps.data.createdAt" />
