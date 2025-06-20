@@ -1,6 +1,16 @@
 import { useApiFetch } from '@/composables/baseApi'
 import type { Event } from '@/types/event'
 
+/**
+ * Event API composable for CRUD operations
+ *
+ * @property {Function} createEvent - The function to create a new event
+ * @property {Function} fetchEvent - The function to fetch an event
+ * @property {Function} updateEvent - The function to update an event
+ * @property {Function} deleteEvent - The function to delete an event
+ *
+ * @returns {Object} Event API composable
+ */
 export const useEventApi = () => {
   /**
    * Create a new event in the database

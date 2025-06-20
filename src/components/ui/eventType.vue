@@ -10,6 +10,10 @@ const props = defineProps<{
   type: Event['type']
 }>()
 
+/**
+ * Compute the color style of the event type
+ * @returns {string} The tw classes of the event type
+ */
 const typeColor = computed(() => {
   switch (props.type) {
     case 'crosspromo':

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import { useToast } from 'primevue/usetoast'
 import { useEvents } from '@/composables/events'
 
@@ -13,6 +13,9 @@ defineOptions({
 const { search } = useEvents()
 
 onMounted(() => {
+  /**
+   * Add a keyboard shortcut for the search input
+   */
   window.addEventListener('keydown', (e) => {
     if (e.ctrlKey && e.key === 'k') {
       e.preventDefault()
@@ -30,6 +33,17 @@ onMounted(() => {
   })
 })
 
+onUnmounted(() => {
+  /**
+   * Remove the keyboard shortcut for the search input
+   */
+  window.removeEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.key === 'k') {
+      e.preventDefault()
+    }
+  })
+})
+
 const openDocs = () => {
   window.open(`${import.meta.env.VITE_API_URL}/docs`, '_blank')
 }
@@ -37,11 +51,13 @@ const openDocs = () => {
 
 <template>
   <div class="flex w-full grow items-center px-6">
+    <!-- Header logo -->
     <div class="flex items-center gap-2" data-test-id="header-logo">
       <img src="/favicono7.png" class="h-6" />
       <h1 class="text-2xl font-semibold text-neutral-100">Events7</h1>
     </div>
 
+    <!-- Search input -->
     <div class="relative mx-auto w-full max-w-[600px]">
       <i
         class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500"
@@ -61,6 +77,7 @@ const openDocs = () => {
       </span>
     </div>
 
+    <!-- Docs button -->
     <div class="flex items-center gap-1.5">
       <div
         data-test-id="docs-button"

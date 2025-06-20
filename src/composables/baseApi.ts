@@ -1,5 +1,13 @@
 import { useUser } from './user'
 
+/**
+ * Base API fetch function. Wraps the default fetch request and adds the user IP to the headers.
+ *
+ * @param {string} path - The path to the API endpoint
+ * @param {RequestInit} options - The options for the fetch request (method, body, etc.)
+ *
+ * @returns {Promise<any>} The response from the API
+ */
 export const useApiFetch = async (path: string, options: RequestInit = {}) => {
   const { user, getUserIp } = useUser()
 

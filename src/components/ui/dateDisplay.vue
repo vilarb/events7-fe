@@ -9,6 +9,7 @@ const props = defineProps<{
 </script>
 
 <template>
+  <!-- Format the date to a readable string -->
   <div>
     {{
       new Date(props.date).toLocaleString('en-US', {

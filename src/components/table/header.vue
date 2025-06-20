@@ -9,6 +9,10 @@ defineOptions({
 
 const { typeFilter, fetchEvents, eventTypes } = useEvents()
 
+/**
+ * Compute the filter options
+ * @returns {Array<{value: string, label: string}>} The filter options
+ */
 const filterOptions = computed(() => {
   return [
     { value: 'all' as const, label: 'All' },
@@ -19,6 +23,10 @@ const filterOptions = computed(() => {
   ]
 })
 
+/**
+ * Set the filter type and fetch the new events
+ * @param type - The type to filter by
+ */
 const setFilter = (type: Event['type'] | 'all') => {
   typeFilter.value = type === 'all' ? null : type
   fetchEvents()
@@ -27,6 +35,7 @@ const setFilter = (type: Event['type'] | 'all') => {
 
 <template>
   <div class="flex items-center gap-2 text-xs">
+    <!-- Filter options -->
     <div
       data-test-id="filter-option"
       :data-test-value="option.value"

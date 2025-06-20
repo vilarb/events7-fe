@@ -6,6 +6,9 @@ import { useEvents } from '@/composables/events'
 
 const { fetchEvents } = useEvents()
 
+/**
+ * Initial fetch of events on route mount
+ */
 onMounted(async () => {
   await fetchEvents()
 })
@@ -19,7 +22,7 @@ onMounted(async () => {
       <AppTable />
     </main>
 
-    <!-- Router views for event details -->
+    <!-- Router views for child routes (event details) -->
     <RouterView />
 
     <!-- Dialogs -->

@@ -13,6 +13,8 @@ const { loading } = useUser()
 
     <!-- Router views -->
     <RouterView v-if="!loading" />
+
+    <!-- Loading state -->
     <div
       v-else
       class="flex h-[calc(100vh-56px)] w-full shrink-0 items-center rounded-t-2xl justify-center bg-zinc-200 dark:bg-zinc-800"

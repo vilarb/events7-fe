@@ -16,6 +16,7 @@ defineProps<{
   invalidAdsType: boolean
 }>()
 
+// Define the event model
 const event = defineModel<Omit<Event, 'id' | 'createdAt' | 'updatedAt'>>({
   default: () => ({
     title: '',

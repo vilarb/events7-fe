@@ -1,3 +1,6 @@
+/**
+ * Base event interface for the database
+ */
 export interface Event {
   id: number
   title: string
@@ -8,4 +11,7 @@ export interface Event {
   updatedAt: string
 }
 
+/**
+ * Event form data interface
+ */
 export type EventFormData = Omit<Event, 'id' | 'createdAt' | 'updatedAt'>

@@ -38,6 +38,10 @@ const navigateToEvent = (event: DataTableRowClickEvent) => {
   router.push(`/event/${event.data.id}`)
 }
 
+/**
+ * Sort the table by the given field and fetch the new events
+ * @param event - The event data
+ */
 const sortTable = (event: DataTableSortEvent) => {
   if (event.sortField) {
     orderBy.value = event.sortField as string
@@ -54,6 +58,7 @@ defineExpose({ changeTablePage, sortTable })
 
 <template>
   <div class="flex w-full flex-col gap-6 p-6">
+    <!-- Header -->
     <div class="flex items-center justify-between">
       <div class="text-xl font-medium">Event management</div>
       <Button
@@ -63,6 +68,8 @@ defineExpose({ changeTablePage, sortTable })
         @click="createEventDialogOpen = true"
       />
     </div>
+
+    <!-- Events table -->
     <div class="border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden">
       <DataTable
         data-test-id="events-table"

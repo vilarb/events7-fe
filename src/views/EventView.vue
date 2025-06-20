@@ -187,6 +187,7 @@ const deleteEvent = async () => {
     :closeOnEscape="true"
     class="!w-[500px]"
   >
+    <!-- Event title -->
     <template #header>
       <div class="flex flex-col gap-1">
         <h6 class="text-xs uppercase opacity-60 font-medium">
@@ -198,13 +199,16 @@ const deleteEvent = async () => {
     </template>
 
     <div class="flex flex-col gap-4 h-full" v-if="currentEvent">
+      <!-- Event form -->
       <AppUiEventForm v-model="currentEvent" :invalidAdsType="invalidAdsType" />
 
+      <!-- Save and close buttons -->
       <div class="flex justify-end gap-2">
         <Button label="Close" @click="closeDrawer" severity="secondary" size="small" />
         <Button label="Update event" @click="saveEvent" size="small" :loading="loading" />
       </div>
 
+      <!-- Danger zone - Delete button -->
       <div
         class="flex justify-between border items-center border-red-600 rounded-md p-4 gap-4 mt-auto relative"
       >
@@ -233,6 +237,8 @@ const deleteEvent = async () => {
         </div>
       </div>
     </div>
+
+    <!-- Loading state -->
     <div v-else class="flex flex-col gap-6">
       <Skeleton height="2rem" width="100%" />
       <Skeleton height="2rem" width="100%" />
@@ -240,6 +246,7 @@ const deleteEvent = async () => {
       <Skeleton height="2rem" width="100%" />
     </div>
 
+    <!-- Confirm popup for deleting an event -->
     <AppUiConfirmPopup
       v-model:visible="deleteEventPopupVisible"
       title="Delete event"
