@@ -109,9 +109,21 @@ defineExpose({ changeTablePage, sortTable })
           </div>
         </template>
 
-        <Column field="id" header="#ID" sortable></Column>
-        <Column field="title" header="Title" class="max-w-[150px] truncate"></Column>
-        <Column field="description" header="Description" class="max-w-[300px] truncate"></Column>
+        <Column field="id" header="ID" sortable>
+          <template #body="slotProps">
+            <span class="opacity-60">#{{ slotProps.data.id }}</span>
+          </template>
+        </Column>
+        <Column field="title" header="Title" class="max-w-[150px] truncate">
+          <template #body="slotProps">
+            <span class="font-medium">{{ slotProps.data.title }}</span>
+          </template>
+        </Column>
+        <Column field="description" header="Description" class="max-w-[300px] truncate">
+          <template #body="slotProps">
+            <span class="opacity-60">{{ slotProps.data.description }}</span>
+          </template>
+        </Column>
         <Column field="type" header="Type">
           <template #body="slotProps">
             <div class="flex items-center">
@@ -119,7 +131,7 @@ defineExpose({ changeTablePage, sortTable })
             </div>
           </template>
         </Column>
-        <Column field="priority" header="Priority" sortable></Column>
+        <Column field="priority" header="Priority" sortable> </Column>
         <Column field="createdAt" header="Created" sortable>
           <template #body="slotProps">
             <AppUiDateDisplay :date="slotProps.data.createdAt" />
