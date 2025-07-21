@@ -43,7 +43,9 @@ test('create event', async ({ page }) => {
   )
 
   // Get the event id
-  eventId = Number(await page.locator('[data-p-index="0"] td:nth-child(1)').textContent())
+  eventId = Number(
+    (await page.locator('[data-p-index="0"] td:nth-child(1) span').textContent())?.replace('#', ''),
+  )
 })
 
 /**
